@@ -7,7 +7,9 @@ module sanescanfx {
 	requires org.kordamp.ikonli.core;
 	requires org.kordamp.ikonli.javafx;
 	requires org.kordamp.ikonli.material2;
-	requires jfreesane;
+	requires org.kordamp.ikonli.fontawesome;
+	
+	requires transitive jfreesane;
 	requires java.desktop;
 	requires javafx.swing;
 	
