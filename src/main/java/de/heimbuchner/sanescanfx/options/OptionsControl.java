@@ -51,7 +51,7 @@ public class OptionsControl extends VBox {
 					for (int row = 0; row < optionGroup.getOptions().size(); row++) {
 						SaneOption saneOption = optionGroup.getOptions().get(row);
 						Label l = new Label(saneOption.getTitle());
-						Tooltip tooltip = new Tooltip(saneOption.getDescription());
+						Tooltip tooltip = new Tooltip(saneOption.getDescription() + " [" + saneOption.getName()+","+saneOption.getType()+"]");
 						Tooltip.install(l, tooltip);
 						gp.add(l, 0, row);
 

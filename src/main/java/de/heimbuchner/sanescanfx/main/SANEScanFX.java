@@ -7,14 +7,13 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import au.com.southsky.jfreesane.OptionGroup;
-import au.com.southsky.jfreesane.OptionValueType;
 import au.com.southsky.jfreesane.SaneDevice;
-import au.com.southsky.jfreesane.SaneException;
-import au.com.southsky.jfreesane.SaneOption;
 import au.com.southsky.jfreesane.SaneSession;
+import au.com.southsky.jfreesane.ScanListener;
+import au.com.southsky.jfreesane.ScanListenerAdapter;
 import de.heimbuchner.sanescanfx.options.OptionsControl;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.embed.swing.SwingFXUtils;
@@ -25,6 +24,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -35,7 +36,13 @@ import javafx.stage.Stage;
 public class SANEScanFX extends Application implements Initializable {
 
 	@FXML
+	private Button scan;
+
+	@FXML
 	private Button previewScan;
+
+	@FXML
+	private Button timerScan;
 
 	@FXML
 	private ImageView imageview;
@@ -58,6 +65,15 @@ public class SANEScanFX extends Application implements Initializable {
 	@FXML
 	private ScrollPane scanOption;
 
+	@FXML
+	private StackPane scanVeil;
+
+	@FXML
+	private Label scanVeilLabel;
+
+	@FXML
+	private ProgressBar scanVeilProgress;
+
 	public static void main(String[] args) {
 		launch(args);
 	}
@@ -71,47 +87,19 @@ public class SANEScanFX extends Application implements Initializable {
 		primaryStage.show();
 	}
 
-	private void printOptions(SaneDevice device) throws IOException, SaneException {
-		for (OptionGroup optionGroup : device.getOptionGroups()) {
-			System.out.println(optionGroup.getTitle());
-			for (SaneOption saneOption : optionGroup.getOptions()) {
-				System.out.println(
-						" " + saneOption.getTitle() + " " + saneOption.isActive() + " " + saneOption.isWriteable());
-				if (saneOption.getType().equals(OptionValueType.STRING)) {
-					List<String> validValues = saneOption.getStringConstraints();
-					if (validValues != null) {
-						System.out.println("   " + saneOption.getStringValue() + " " + validValues);
-					}
-				}
-
-				try {
-					if (saneOption.getType().equals(OptionValueType.INT)) {
-						List<Integer> validValues = saneOption.getIntegerValueListConstraint();
-						if (validValues != null) {
-							System.out.println("   " + validValues);
-						}
-					}
-				} catch (Exception e) {
-					// TODO: handle exception
-				}
-
-			}
-		}
-	}
-
 	private OptionsControl optionsControl;
 
 	private SaneSession session;
-	
+
 	private SaneDevice currentDevice;
-	
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 
 		refreshDevice.setOnAction(event -> {
 			deviceVeil.setVisible(true);
-			
-			if (currentDevice!=null) {
+
+			if (currentDevice != null) {
 				try {
 					currentDevice.close();
 					System.out.println("device closed");
@@ -119,8 +107,8 @@ public class SANEScanFX extends Application implements Initializable {
 					System.out.println(e.getMessage());
 				}
 			}
-			
-			if (session!=null) {
+
+			if (session != null) {
 				try {
 					session.close();
 					System.out.println("session closed");
@@ -141,7 +129,7 @@ public class SANEScanFX extends Application implements Initializable {
 						System.out.println(e2.getMessage());
 						session = SaneSession.withRemoteSane(adress, intPort);
 					}
-					
+
 					List<SaneDevice> devices = session.listDevices();
 					List<SaneDeviceFX> fxList = FXCollections.observableArrayList();
 					for (SaneDevice saneDevice : devices) {
@@ -185,42 +173,69 @@ public class SANEScanFX extends Application implements Initializable {
 					currentDevice.open();
 					optionsControl = new OptionsControl(currentDevice);
 					scanOption.setContent(optionsControl);
+
+					scan.setDisable(false);
+					previewScan.setDisable(false);
+					timerScan.setDisable(false);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 
+			} else {
+				scan.setDisable(true);
+				previewScan.setDisable(true);
+				timerScan.setDisable(true);
 			}
 		});
 
-		previewScan.setOnAction(e -> {
-			try {
+		scan.setOnAction(event -> executeScan(null, "Scan ..."));
 
-				InetAddress adress = InetAddress.getByName("192.168.178.57");
-				System.out.println(adress);
+		previewScan.setOnAction(event -> executeScan(100, "Preview ..."));
 
-				SaneSession session = SaneSession.withRemoteSane(adress);
-				List<SaneDevice> devices = session.listDevices();
-				System.out.println(devices);
-				SaneDevice device = devices.get(0);
-				device.open();
+	}
 
-				printOptions(device);
+	private void executeScan(Integer resolution, String scanType) {
 
-				System.out.println(device.getOption("mode").getStringValue());
-				device.getOption("mode").setStringValue("Color");
-
-				printOptions(device);
-
-				BufferedImage image = device.acquireImage();
-				Image imageFX = SwingFXUtils.toFXImage(image, null);
-				imageview.setImage(imageFX);
-				device.close();
-			} catch (IOException | SaneException e1) {
-				e1.printStackTrace();
+		ScanListener progressBarUpdater = new ScanListenerAdapter() {
+			@Override
+			public void recordRead(SaneDevice device, final int totalBytesRead, final int imageSize) {
+				final double fraction = 1.0 * totalBytesRead / imageSize;
+				Platform.runLater(() -> scanVeilProgress.setProgress(fraction));
 			}
+		};
 
+		scanVeil.setVisible(true);
+		scanVeilProgress.setProgress(0);
+		scanVeilLabel.setText(scanType);
+
+		Task<Image> scanWorker = new Task<Image>() {
+			@Override
+			protected Image call() throws Exception {
+				int originalRes = currentDevice.getOption("resolution").getIntegerValue();
+				currentDevice.getOption("resolution").setIntegerValue(resolution == null ? originalRes : resolution);
+
+				BufferedImage image = currentDevice.acquireImage(progressBarUpdater);
+
+				currentDevice.getOption("resolution").setIntegerValue(originalRes);
+				return SwingFXUtils.toFXImage(image, null);
+			}
+		};
+
+		scanWorker.setOnFailed(wse -> {
+			scanVeil.setVisible(false);
+			JavaFXUtils.showExceptionDialog("Exception", null, "An exception occured", scanWorker.getException());
 		});
 
+		scanWorker.setOnSucceeded(wse -> {
+			scanVeil.setVisible(false);
+			imageview.setImage(scanWorker.getValue());
+			imageview.setFitWidth(imageview.getImage().getWidth());
+			imageview.setFitHeight(imageview.getImage().getHeight());
+		});
+
+		Thread t = new Thread(scanWorker);
+		t.setDaemon(true);
+		t.start();
 	}
 
 }
