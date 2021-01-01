@@ -80,10 +80,14 @@ public class SANEScanFX extends Application implements Initializable {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		
+		Image icon = new Image(SANEScanFX.class.getResourceAsStream("icon.png"));
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("SANEScanFX.fxml"));
 		Parent parent = loader.load();
 		Scene s = new Scene(parent);
 		primaryStage.setScene(s);
+		primaryStage.setTitle("SANEScanFX");
+		primaryStage.getIcons().add(icon);
 		primaryStage.show();
 	}
 
