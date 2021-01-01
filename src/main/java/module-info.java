@@ -16,5 +16,6 @@ module sanescanfx {
 	opens de.heimbuchner.sanescanfx.main to javafx.fxml;
 
 	exports de.heimbuchner.sanescanfx.main;
+	exports de.heimbuchner.sanescanfx.controls;
 
 }
