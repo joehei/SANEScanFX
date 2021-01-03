@@ -20,23 +20,13 @@ public class OptionsControl extends VBox {
 
 	private ObjectProperty<SaneDevice> device = new SimpleObjectProperty<>();;
 
+	private ObservableList<ASaneOption> saneOptionsFX = FXCollections.observableArrayList();
+
 	public OptionsControl(SaneDevice device) {
 		this.device.setValue(device);
 		this.device.addListener((obs, ov, nv) -> buildControls());
 		buildControls();
 	}
-
-	private GridPane getPane() {
-		GridPane gp = new GridPane();
-		gp.setHgap(5);
-		gp.setVgap(5);
-		ColumnConstraints columnConstraints = new ColumnConstraints();
-		columnConstraints.setPrefWidth(150);
-		gp.getColumnConstraints().add(columnConstraints);
-		return gp;
-	}
-
-	private ObservableList<ASaneOption> saneOptionsFX = FXCollections.observableArrayList();
 
 	private void buildControls() {
 		getChildren().clear();
@@ -51,7 +41,8 @@ public class OptionsControl extends VBox {
 					for (int row = 0; row < optionGroup.getOptions().size(); row++) {
 						SaneOption saneOption = optionGroup.getOptions().get(row);
 						Label l = new Label(saneOption.getTitle());
-						Tooltip tooltip = new Tooltip(saneOption.getDescription() + " [" + saneOption.getName()+","+saneOption.getType()+"]");
+						Tooltip tooltip = new Tooltip(saneOption.getDescription() + " [" + saneOption.getName() + ","
+								+ saneOption.getType() + "]");
 						Tooltip.install(l, tooltip);
 						gp.add(l, 0, row);
 
@@ -96,6 +87,16 @@ public class OptionsControl extends VBox {
 				JavaFXUtils.showExceptionDialog("Exception", null, "An exception occured", e);
 			}
 		}
+	}
+
+	private GridPane getPane() {
+		GridPane gp = new GridPane();
+		gp.setHgap(5);
+		gp.setVgap(5);
+		ColumnConstraints columnConstraints = new ColumnConstraints();
+		columnConstraints.setPrefWidth(150);
+		gp.getColumnConstraints().add(columnConstraints);
+		return gp;
 	}
 
 }

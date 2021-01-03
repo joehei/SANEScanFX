@@ -40,7 +40,7 @@ public class CaretCoordinatesTest1 extends Application {
 			if (event.getCode() == KeyCode.SPACE && event.isControlDown()) {
 				Path caret = JavaFXUtils.findCaret(textArea);
 				Point2D screenLoc = JavaFXUtils.findScreenLocation(caret);
-				popup.show(textArea, screenLoc.getX()+4, screenLoc.getY() + 20);
+				popup.show(textArea, screenLoc.getX() + 4, screenLoc.getY() + 20);
 			}
 		});
 

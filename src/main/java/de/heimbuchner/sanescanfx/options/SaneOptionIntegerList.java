@@ -13,9 +13,10 @@ public class SaneOptionIntegerList extends ASaneOption {
 
 	private ChoiceBox<Integer> intCb;
 
-	protected SaneOptionIntegerList(SaneDevice saneDevice,String saneOptionName, ObservableList<ASaneOption> saneOptionsFX) throws IOException {
-		super(saneDevice,saneOptionName, saneOptionsFX);
-		
+	protected SaneOptionIntegerList(SaneDevice saneDevice, String saneOptionName,
+			ObservableList<ASaneOption> saneOptionsFX) throws IOException {
+		super(saneDevice, saneOptionName, saneOptionsFX);
+
 		SaneOption saneOption = saneDevice.getOption(saneOptionName);
 		List<Integer> validIntValues = saneOption.getIntegerValueListConstraint();
 		intCb = new ChoiceBox<>();

@@ -19,9 +19,6 @@ import javafx.stage.Window;
 
 public class JavaFXUtils {
 
-	private JavaFXUtils() {
-	}
-
 	public static Path findCaret(Parent parent) {
 		// Warning: this is an ENORMOUS HACK
 		for (Node n : parent.getChildrenUnmodifiable()) {
@@ -88,5 +85,8 @@ public class JavaFXUtils {
 		alert.getDialogPane().setExpandableContent(expContent);
 
 		alert.showAndWait();
+	}
+
+	private JavaFXUtils() {
 	}
 }

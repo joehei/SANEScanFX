@@ -17,27 +17,23 @@ import javafx.stage.Popup;
 
 public class TextfieldCompletion extends TextField {
 
-	public TextfieldCompletion(String text) {
-		super(text);
-		init();
-	}
-	
-	public TextfieldCompletion() {
-		this("");
-	}
-
 	private final Popup popup = new Popup();
 
 	private final TextField searchField = new TextField();
 
 	private ObservableList<String> suggestionListItems;
 
-	public ObservableList<String> getSuggestionListItems() {
-		return suggestionListItems;
+	public TextfieldCompletion() {
+		this("");
 	}
 
-	public void setSuggestionListItems(ObservableList<String> suggestionListItems) {
-		this.suggestionListItems = suggestionListItems;
+	public TextfieldCompletion(String text) {
+		super(text);
+		init();
+	}
+
+	public ObservableList<String> getSuggestionListItems() {
+		return suggestionListItems;
 	}
 
 	private void init() {
@@ -89,6 +85,8 @@ public class TextfieldCompletion extends TextField {
 			if (event.getCode() == KeyCode.SPACE && event.isControlDown()) {
 				Path caret = JavaFXUtils.findCaret(textfieldCompletion);
 				Point2D screenLoc = JavaFXUtils.findScreenLocation(caret);
+				searchField.clear();
+				searchField.requestFocus();
 				popup.show(textfieldCompletion, screenLoc.getX(), screenLoc.getY() + 20);
 			}
 		});
@@ -108,6 +106,10 @@ public class TextfieldCompletion extends TextField {
 		int newCartPos = (part1 + toInsert).length();
 		textfieldCompletion.setText(part1 + toInsert + part2);
 		textfieldCompletion.positionCaret(newCartPos);
+	}
+
+	public void setSuggestionListItems(ObservableList<String> suggestionListItems) {
+		this.suggestionListItems = suggestionListItems;
 	}
 
 }

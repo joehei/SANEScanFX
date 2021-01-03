@@ -12,10 +12,11 @@ import javafx.scene.layout.HBox;
 public class SaneOptionIntegerRange extends ASaneOption {
 
 	private Slider slider;
-	
+
 	private Label currentValue;
 
-	protected SaneOptionIntegerRange(SaneDevice saneDevice,String saneOptionName, ObservableList<ASaneOption> saneOptionsFX) throws IOException {
+	protected SaneOptionIntegerRange(SaneDevice saneDevice, String saneOptionName,
+			ObservableList<ASaneOption> saneOptionsFX) throws IOException {
 		super(saneDevice, saneOptionName, saneOptionsFX);
 
 		SaneOption saneOption = saneDevice.getOption(saneOptionName);
@@ -28,7 +29,7 @@ public class SaneOptionIntegerRange extends ASaneOption {
 
 		box.getChildren().add(slider);
 		box.getChildren().add(new Label(saneOption.getRangeConstraints().getMaximumInteger() + ""));
-		
+
 		currentValue = new Label("");
 		box.getChildren().add(currentValue);
 
@@ -52,7 +53,7 @@ public class SaneOptionIntegerRange extends ASaneOption {
 				int v = saneOption.getIntegerValue();
 				slider.setValue(v);
 				slider.setDisable(false);
-				currentValue.setText(v+"");
+				currentValue.setText(v + "");
 			} else {
 				slider.setDisable(true);
 			}

@@ -11,8 +11,8 @@ public class SaneOptionButton extends ASaneOption {
 
 	private Button button;
 
-	protected SaneOptionButton(SaneDevice saneDevice, String saneOptionName,
-			ObservableList<ASaneOption> saneOptionsFX) throws IOException {
+	protected SaneOptionButton(SaneDevice saneDevice, String saneOptionName, ObservableList<ASaneOption> saneOptionsFX)
+			throws IOException {
 		super(saneDevice, saneOptionName, saneOptionsFX);
 
 		button = new Button(saneDevice.getOption(saneOptionName).getTitle());
@@ -26,7 +26,7 @@ public class SaneOptionButton extends ASaneOption {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
+
 		});
 	}
 

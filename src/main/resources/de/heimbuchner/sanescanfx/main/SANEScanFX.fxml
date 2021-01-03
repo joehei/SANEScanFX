@@ -145,7 +145,7 @@
                                                   </rowConstraints>
                                                    <children>
                                                       <Label text="Time between scans [sec]" />
-                                                      <ChoiceBox prefWidth="150.0" GridPane.columnIndex="1" />
+                                                      <ChoiceBox fx:id="timerSec" prefWidth="150.0" GridPane.columnIndex="1" />
                                                    </children>
                                                    <padding>
                                                       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -155,7 +155,7 @@
                                           </TitledPane>
                                           <TitledPane text="File">
                                              <content>
-                                                <GridPane hgap="5.0" vgap="5.0">
+                                                <GridPane fx:id="fileGrid" hgap="5.0" vgap="5.0">
                                                   <columnConstraints>
                                                     <ColumnConstraints halignment="RIGHT" hgrow="NEVER" minWidth="10.0" prefWidth="150.0" />
                                                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -165,20 +165,20 @@
                                                     <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                                     <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                                       <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                                                      <RowConstraints minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="10.0" vgrow="ALWAYS" />
                                                   </rowConstraints>
                                                    <children>
                                                       <Label text="Output directory" />
                                                       <Label text="File name pattern" GridPane.rowIndex="1" />
                                                       <Label text="Format" GridPane.rowIndex="2" />
-                                                      <Button mnemonicParsing="false" GridPane.columnIndex="2">
+                                                      <Button fx:id="chooseOutputDir" mnemonicParsing="false" GridPane.columnIndex="2">
                                                          <graphic>
                                                             <FontIcon iconLiteral="fa-folder-open-o" iconSize="18" />
                                                          </graphic>
                                                       </Button>
                                                       <Label text="Preview" GridPane.rowIndex="3" />
-                                                      <Label text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                      <ChoiceBox prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                      <Label fx:id="filePathPreview" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                      <ChoiceBox fx:id="fileFormat" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                    </children>
                                                    <padding>
                                                       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

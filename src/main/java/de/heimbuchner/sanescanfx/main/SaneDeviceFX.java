@@ -17,7 +17,7 @@ public class SaneDeviceFX {
 	public void setSaneDevice(SaneDevice saneDevice) {
 		this.saneDevice = saneDevice;
 	}
-	
+
 	@Override
 	public String toString() {
 		return saneDevice.getName();

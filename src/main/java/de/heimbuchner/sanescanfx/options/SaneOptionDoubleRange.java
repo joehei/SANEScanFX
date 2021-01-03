@@ -13,8 +13,9 @@ public class SaneOptionDoubleRange extends ASaneOption {
 
 	private Slider slider;
 
-	protected SaneOptionDoubleRange(SaneDevice saneDevice,String saneOptionName, ObservableList<ASaneOption> saneOptionsFX) throws IOException {
-		super(saneDevice,saneOptionName, saneOptionsFX);
+	protected SaneOptionDoubleRange(SaneDevice saneDevice, String saneOptionName,
+			ObservableList<ASaneOption> saneOptionsFX) throws IOException {
+		super(saneDevice, saneOptionName, saneOptionsFX);
 
 		SaneOption saneOption = saneDevice.getOption(saneOptionName);
 		HBox box = new HBox(5);
@@ -31,7 +32,7 @@ public class SaneOptionDoubleRange extends ASaneOption {
 		slider.valueProperty().addListener((obs, ov, nv) -> {
 			try {
 				saneDevice.getOption(saneOptionName).setFixedValue(nv.doubleValue());
-				fireUpdate();	
+				fireUpdate();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
