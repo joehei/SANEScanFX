@@ -33,6 +33,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -43,6 +44,10 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
 public class SANEScanFX extends Application implements Initializable {
+
+	enum SCANTYPE {
+		PREVIEW, SINGLE, TIMED
+	}
 
 	public static void main(String[] args) {
 		launch(args);
@@ -74,6 +79,9 @@ public class SANEScanFX extends Application implements Initializable {
 
 	@FXML
 	private StackPane deviceVeil;
+
+	@FXML
+	private ProgressBar deviceVeilProgress;
 
 	@FXML
 	private ScrollPane scanOption;
@@ -114,28 +122,25 @@ public class SANEScanFX extends Application implements Initializable {
 
 	private int fileCounter = 0;
 
-	private void executeScan(Integer resolution, String scanType) {
+	@FXML
+	private Button scanVeilCancel;
 
-		ScanListener progressBarUpdater = new ScanListenerAdapter() {
-			@Override
-			public void recordRead(SaneDevice device, final int totalBytesRead, final int imageSize) {
-				final double fraction = 1.0 * totalBytesRead / imageSize;
-				Platform.runLater(() -> scanVeilProgress.setProgress(fraction));
-			}
-		};
+	private ScanListener progressBarUpdater;
 
+	private boolean timedScanActive;
+
+	private void executePreviewScan() {
 		scanVeil.setVisible(true);
-		scanVeilProgress.setProgress(0);
-		scanVeilLabel.setText(scanType);
-
+		deviceVeil.setVisible(true);
+		scanVeilProgress.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
+		scanVeilLabel.setText("Preview ...");
+		scanVeilCancel.setVisible(false);
 		Task<Image> scanWorker = new Task<Image>() {
 			@Override
 			protected Image call() throws Exception {
 				int originalRes = currentDevice.getOption("resolution").getIntegerValue();
-				currentDevice.getOption("resolution").setIntegerValue(resolution == null ? originalRes : resolution);
-
+				currentDevice.getOption("resolution").setIntegerValue(100);
 				BufferedImage image = currentDevice.acquireImage(progressBarUpdater);
-
 				currentDevice.getOption("resolution").setIntegerValue(originalRes);
 				return SwingFXUtils.toFXImage(image, null);
 			}
@@ -143,14 +148,111 @@ public class SANEScanFX extends Application implements Initializable {
 
 		scanWorker.setOnFailed(wse -> {
 			scanVeil.setVisible(false);
+			deviceVeil.setVisible(false);
+			JavaFXUtils.showExceptionDialog("Exception", null, scanWorker.getException().getMessage(),
+					scanWorker.getException());
+		});
+
+		scanWorker.setOnSucceeded(wse -> {
+			scanVeil.setVisible(false);
+			deviceVeil.setVisible(false);
+			imageview.setImage(scanWorker.getValue());
+			imageview.setFitWidth(imageview.getImage().getWidth());
+			imageview.setFitHeight(imageview.getImage().getHeight());
+		});
+
+		Thread t = new Thread(scanWorker);
+		t.setDaemon(true);
+		t.start();
+	}
+
+	private void executeScan() {
+		scanVeil.setVisible(true);
+		deviceVeil.setVisible(true);
+		scanVeilProgress.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
+		scanVeilLabel.setText("Scan ...");
+		scanVeilCancel.setVisible(false);
+
+		Task<Image> scanWorker = new Task<Image>() {
+			@Override
+			protected Image call() throws Exception {
+				BufferedImage image = currentDevice.acquireImage(progressBarUpdater);
+				return SwingFXUtils.toFXImage(image, null);
+			}
+		};
+
+		scanWorker.setOnFailed(wse -> {
+			scanVeil.setVisible(false);
+			deviceVeil.setVisible(false);
 			JavaFXUtils.showExceptionDialog("Exception", null, "An exception occured", scanWorker.getException());
 		});
 
 		scanWorker.setOnSucceeded(wse -> {
 			scanVeil.setVisible(false);
-			imageview.setImage(scanWorker.getValue());
-			imageview.setFitWidth(imageview.getImage().getWidth());
-			imageview.setFitHeight(imageview.getImage().getHeight());
+			deviceVeil.setVisible(false);
+			setImage(scanWorker.getValue());
+		});
+
+		Thread t = new Thread(scanWorker);
+		t.setDaemon(true);
+		t.start();
+	}
+
+	private void setImage(Image image) {
+		Platform.runLater(() -> {
+			imageview.setImage(image);
+			imageview.setFitWidth(image.getWidth());
+			imageview.setFitHeight(image.getHeight());
+		});
+	}
+
+	private void executeTimedScan() {
+		timedScanActive = true;
+
+		scanVeil.setVisible(true);
+		deviceVeil.setVisible(true);
+		scanVeilProgress.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
+		scanVeilLabel.setText("Timed scan ...");
+		scanVeilCancel.setVisible(true);
+
+		Task<Void> scanWorker = new Task<Void>() {
+			@Override
+			protected Void call() throws Exception {
+				while (timedScanActive) {
+					int counter = timerSec.getSelectionModel().getSelectedItem();
+					Platform.runLater(() -> scanVeilProgress.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS));
+
+					while (counter >= 0) {
+						final int c = counter;
+						Platform.runLater(() -> scanVeilLabel.setText("Scan starts in " + c + " sec."));
+						Thread.sleep(1000);
+						counter--;
+						if (!timedScanActive) {
+							break;
+						}
+					}
+
+					if (!timedScanActive) {
+						break;
+					}
+					Platform.runLater(() -> scanVeilLabel.setText("Timed scan ..."));
+					BufferedImage image = currentDevice.acquireImage(progressBarUpdater);
+					setImage(SwingFXUtils.toFXImage(image, null));
+				}
+
+				return null;
+			}
+		};
+
+		scanWorker.setOnFailed(wse -> {
+			scanVeil.setVisible(false);
+			deviceVeil.setVisible(false);
+			JavaFXUtils.showExceptionDialog("Exception", null, "An exception occured", scanWorker.getException());
+		});
+
+		scanWorker.setOnSucceeded(wse -> {
+			scanVeil.setVisible(false);
+			deviceVeil.setVisible(false);
 		});
 
 		Thread t = new Thread(scanWorker);
@@ -192,7 +294,7 @@ public class SANEScanFX extends Application implements Initializable {
 		fileFormat.getSelectionModel().selectedItemProperty().addListener((obs, ov, nv) -> updateFileNamePreview());
 		refreshDevice.setOnAction(event -> {
 			deviceVeil.setVisible(true);
-
+			deviceVeilProgress.setVisible(true);
 			if (currentDevice != null) {
 				try {
 					currentDevice.close();
@@ -235,11 +337,13 @@ public class SANEScanFX extends Application implements Initializable {
 
 			worker.setOnFailed(wse -> {
 				deviceVeil.setVisible(false);
+				deviceVeilProgress.setVisible(false);
 				JavaFXUtils.showExceptionDialog("Exception", null, "An exception occured", worker.getException());
 			});
 
 			worker.setOnSucceeded(wse -> {
 				deviceVeil.setVisible(false);
+				deviceVeilProgress.setVisible(false);
 				deviceList.getItems().setAll(worker.getValue());
 				deviceList.getSelectionModel().selectFirst();
 			});
@@ -282,10 +386,19 @@ public class SANEScanFX extends Application implements Initializable {
 			}
 		});
 
-		scan.setOnAction(event -> executeScan(null, "Scan ..."));
+		progressBarUpdater = new ScanListenerAdapter() {
+			@Override
+			public void recordRead(SaneDevice device, final int totalBytesRead, final int imageSize) {
+				final double fraction = 1.0 * totalBytesRead / imageSize;
+				Platform.runLater(() -> scanVeilProgress.setProgress(fraction));
+			}
+		};
 
-		previewScan.setOnAction(event -> executeScan(100, "Preview ..."));
-
+		scan.setOnAction(event -> executeScan());
+		previewScan.setOnAction(event -> executePreviewScan());
+		timerScan.setOnAction(event -> executeTimedScan());
+		scanVeilCancel.setOnAction(event -> timedScanActive = false);
+		
 	}
 
 	@Override

@@ -28,7 +28,7 @@
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="667.0" prefWidth="887.0" stylesheets="@SANEScanFX.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.heimbuchner.sanescanfx.main.SANEScanFX">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="666.0" prefWidth="1094.0" stylesheets="@SANEScanFX.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.heimbuchner.sanescanfx.main.SANEScanFX">
    <children>
       <MenuBar>
         <menus>
@@ -49,162 +49,166 @@
           </Menu>
         </menus>
       </MenuBar>
-      <ToolBar prefWidth="200.0" VBox.vgrow="NEVER">
-        <items>
-          <Button fx:id="scan" disable="true" mnemonicParsing="false">
-               <graphic>
-                  <FontIcon iconLiteral="mdmz-scanner" iconSize="17" />
-               </graphic>
-               <tooltip>
-                  <Tooltip text="Scan" />
-               </tooltip>
-            </Button>
-            <Button fx:id="previewScan" disable="true" mnemonicParsing="false">
-               <graphic>
-                  <FontIcon iconLiteral="mdal-image_search" iconSize="17" />
-               </graphic>
-               <tooltip>
-                  <Tooltip text="Preview scan" />
-               </tooltip>
-            </Button>
-            <Button fx:id="timerScan" disable="true" mnemonicParsing="false">
-               <graphic>
-                  <FontIcon iconLiteral="mdomz-timer" iconSize="17" />
-               </graphic>
-               <tooltip>
-                  <Tooltip text="Preview scan" />
-               </tooltip>
-            </Button>
-        </items>
-      </ToolBar>
-      <SplitPane dividerPositions="0.5" VBox.vgrow="ALWAYS">
+      <SplitPane dividerPositions="0.4" VBox.vgrow="ALWAYS">
          <items>
             <StackPane SplitPane.resizableWithParent="false">
                <children>
-                  <TabPane tabClosingPolicy="UNAVAILABLE">
-                     <tabs>
-                        <Tab closable="false" text="Scanner">
-                           <content>
-                              <VBox>
-                                 <children>
-                                    <TitledPane text="Connection" VBox.vgrow="NEVER">
-                                       <VBox.margin>
-                                          <Insets />
-                                       </VBox.margin>
-                                       <content>
-                                          <GridPane hgap="5.0" minHeight="-Infinity" vgap="5.0">
-                                            <columnConstraints>
-                                              <ColumnConstraints halignment="RIGHT" hgrow="NEVER" minWidth="-Infinity" />
-                                              <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
-                                            </columnConstraints>
-                                            <rowConstraints>
-                                              <RowConstraints minHeight="10.0" vgrow="NEVER" />
-                                              <RowConstraints minHeight="10.0" vgrow="NEVER" />
-                                                <RowConstraints minHeight="10.0" vgrow="NEVER" />
-                                            </rowConstraints>
-                                             <children>
-                                                <Label text="Host" />
-                                                <TextField fx:id="host" promptText="host name" text="192.168.178.57" GridPane.columnIndex="1" />
-                                                <Label text="Port" GridPane.rowIndex="1" />
-                                                <TextField fx:id="port" promptText="6566" text="6566" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                <Label text="Available devices" GridPane.rowIndex="2" />
-                                                <HBox spacing="5.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2">
-                                                   <children>
-                                                      <ComboBox fx:id="deviceList" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
-                                                      <Button fx:id="refreshDevice" mnemonicParsing="false">
-                                                         <graphic>
-                                                            <FontIcon iconLiteral="fa-refresh" iconSize="17" />
-                                                         </graphic>
-                                                      </Button>
-                                                   </children>
-                                                </HBox>
-                                             </children>
-                                          </GridPane>
-                                       </content>
-                                    </TitledPane>
-                                    <ScrollPane fx:id="scanOption" fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS" />
-                                 </children>
-                              </VBox>
-                           </content>
-                        </Tab>
-                        <Tab text="Output">
-                          <content>
-                              <ScrollPane fitToWidth="true">
+                  <VBox>
+                     <children>
+                        <ToolBar prefWidth="200.0" VBox.vgrow="NEVER">
+                          <items>
+                              <Button fx:id="previewScan" disable="true" mnemonicParsing="false">
+                                 <graphic>
+                                    <FontIcon iconLiteral="mdal-image_search" iconSize="17" />
+                                 </graphic>
+                                 <tooltip>
+                                    <Tooltip text="Preview scan" />
+                                 </tooltip>
+                              </Button>
+                            <Button fx:id="scan" disable="true" mnemonicParsing="false">
+                                 <graphic>
+                                    <FontIcon iconLiteral="mdmz-scanner" iconSize="17" />
+                                 </graphic>
+                                 <tooltip>
+                                    <Tooltip text="Scan" />
+                                 </tooltip>
+                              </Button>
+                              <Button fx:id="timerScan" disable="true" mnemonicParsing="false">
+                                 <graphic>
+                                    <FontIcon iconLiteral="mdomz-timer" iconSize="17" />
+                                 </graphic>
+                                 <tooltip>
+                                    <Tooltip text="Timed scan" />
+                                 </tooltip>
+                              </Button>
+                          </items>
+                        </ToolBar>
+                        <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+                           <tabs>
+                              <Tab closable="false" text="Scanner">
                                  <content>
                                     <VBox>
                                        <children>
-                                          <TitledPane text="Timer scan">
+                                          <TitledPane text="Connection" VBox.vgrow="NEVER">
+                                             <VBox.margin>
+                                                <Insets />
+                                             </VBox.margin>
                                              <content>
-                                                <GridPane hgap="5.0" vgap="5.0">
+                                                <GridPane hgap="5.0" minHeight="-Infinity" vgap="5.0">
                                                   <columnConstraints>
-                                                    <ColumnConstraints halignment="RIGHT" hgrow="NEVER" minWidth="10.0" prefWidth="150.0" />
-                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                    <ColumnConstraints halignment="RIGHT" hgrow="NEVER" minWidth="-Infinity" />
+                                                    <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
                                                   </columnConstraints>
                                                   <rowConstraints>
-                                                    <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                                    <RowConstraints minHeight="10.0" vgrow="NEVER" />
+                                                    <RowConstraints minHeight="10.0" vgrow="NEVER" />
+                                                      <RowConstraints minHeight="10.0" vgrow="NEVER" />
                                                   </rowConstraints>
                                                    <children>
-                                                      <Label text="Time between scans [sec]" />
-                                                      <ChoiceBox fx:id="timerSec" prefWidth="150.0" GridPane.columnIndex="1" />
+                                                      <Label text="Host" />
+                                                      <TextField fx:id="host" promptText="host name" text="192.168.178.57" GridPane.columnIndex="1" />
+                                                      <Label text="Port" GridPane.rowIndex="1" />
+                                                      <TextField fx:id="port" promptText="6566" text="6566" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                      <Label text="Available devices" GridPane.rowIndex="2" />
+                                                      <HBox spacing="5.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2">
+                                                         <children>
+                                                            <ComboBox fx:id="deviceList" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                                                            <Button fx:id="refreshDevice" mnemonicParsing="false">
+                                                               <graphic>
+                                                                  <FontIcon iconLiteral="fa-refresh" iconSize="17" />
+                                                               </graphic>
+                                                            </Button>
+                                                         </children>
+                                                      </HBox>
                                                    </children>
-                                                   <padding>
-                                                      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                                   </padding>
                                                 </GridPane>
                                              </content>
                                           </TitledPane>
-                                          <TitledPane text="File">
-                                             <content>
-                                                <GridPane fx:id="fileGrid" hgap="5.0" vgap="5.0">
-                                                  <columnConstraints>
-                                                    <ColumnConstraints halignment="RIGHT" hgrow="NEVER" minWidth="10.0" prefWidth="150.0" />
-                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                                      <ColumnConstraints hgrow="NEVER" minWidth="10.0" />
-                                                  </columnConstraints>
-                                                  <rowConstraints>
-                                                    <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                                                    <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                                                      <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                                                      <RowConstraints minHeight="10.0" vgrow="ALWAYS" />
-                                                  </rowConstraints>
-                                                   <children>
-                                                      <Label text="Output directory" />
-                                                      <Label text="File name pattern" GridPane.rowIndex="1" />
-                                                      <Label text="Format" GridPane.rowIndex="2" />
-                                                      <Button fx:id="chooseOutputDir" mnemonicParsing="false" GridPane.columnIndex="2">
-                                                         <graphic>
-                                                            <FontIcon iconLiteral="fa-folder-open-o" iconSize="18" />
-                                                         </graphic>
-                                                      </Button>
-                                                      <Label text="Preview" GridPane.rowIndex="3" />
-                                                      <Label fx:id="filePathPreview" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                      <ChoiceBox fx:id="fileFormat" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                   </children>
-                                                   <padding>
-                                                      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                                   </padding>
-                                                </GridPane>
-                                             </content>
-                                          </TitledPane>
+                                          <ScrollPane fx:id="scanOption" fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS" />
                                        </children>
                                     </VBox>
                                  </content>
-                              </ScrollPane>
-                          </content>
-                        </Tab>
-                     </tabs>
-                  </TabPane>
+                              </Tab>
+                              <Tab text="Output">
+                                <content>
+                                    <ScrollPane fitToWidth="true">
+                                       <content>
+                                          <VBox>
+                                             <children>
+                                                <TitledPane text="Timer scan">
+                                                   <content>
+                                                      <GridPane hgap="5.0" vgap="5.0">
+                                                        <columnConstraints>
+                                                          <ColumnConstraints halignment="RIGHT" hgrow="NEVER" minWidth="10.0" prefWidth="150.0" />
+                                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                        </columnConstraints>
+                                                        <rowConstraints>
+                                                          <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                                        </rowConstraints>
+                                                         <children>
+                                                            <Label text="Time between scans [sec]" />
+                                                            <ChoiceBox fx:id="timerSec" prefWidth="150.0" GridPane.columnIndex="1" />
+                                                         </children>
+                                                         <padding>
+                                                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                         </padding>
+                                                      </GridPane>
+                                                   </content>
+                                                </TitledPane>
+                                                <TitledPane text="File">
+                                                   <content>
+                                                      <GridPane fx:id="fileGrid" hgap="5.0" vgap="5.0">
+                                                        <columnConstraints>
+                                                          <ColumnConstraints halignment="RIGHT" hgrow="NEVER" minWidth="10.0" prefWidth="150.0" />
+                                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                            <ColumnConstraints hgrow="NEVER" minWidth="10.0" />
+                                                        </columnConstraints>
+                                                        <rowConstraints>
+                                                          <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                                          <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints minHeight="10.0" vgrow="ALWAYS" />
+                                                        </rowConstraints>
+                                                         <children>
+                                                            <Label text="Output directory" />
+                                                            <Label text="File name pattern" GridPane.rowIndex="1" />
+                                                            <Label text="Format" GridPane.rowIndex="2" />
+                                                            <Button fx:id="chooseOutputDir" mnemonicParsing="false" GridPane.columnIndex="2">
+                                                               <graphic>
+                                                                  <FontIcon iconLiteral="fa-folder-open-o" iconSize="18" />
+                                                               </graphic>
+                                                            </Button>
+                                                            <Label text="Preview" GridPane.rowIndex="3" />
+                                                            <Label fx:id="filePathPreview" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                            <ChoiceBox fx:id="fileFormat" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                         </children>
+                                                         <padding>
+                                                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                         </padding>
+                                                      </GridPane>
+                                                   </content>
+                                                </TitledPane>
+                                             </children>
+                                          </VBox>
+                                       </content>
+                                    </ScrollPane>
+                                </content>
+                              </Tab>
+                           </tabs>
+                        </TabPane>
+                     </children>
+                  </VBox>
                   <StackPane fx:id="deviceVeil" visible="false">
                      <children>
                         <Region style="-fx-background-color: rgb(0,0,0,.4);" />
-                        <ProgressBar prefWidth="200.0" />
+                        <ProgressBar fx:id="deviceVeilProgress" prefWidth="200.0" visible="false" />
                      </children>
                   </StackPane>
                </children>
             </StackPane>
             <StackPane>
                <children>
-                  <ScrollPane>
+                  <ScrollPane pannable="true">
                      <content>
                         <ImageView fx:id="imageview" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
                      </content>
@@ -212,7 +216,7 @@
                   <StackPane fx:id="scanVeil" prefHeight="150.0" prefWidth="200.0" visible="false">
                      <children>
                         <Region prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: rgb(0,0,0,.4);" />
-                        <VBox alignment="CENTER" spacing="5.0">
+                        <VBox alignment="CENTER" spacing="10.0">
                            <children>
                               <Label fx:id="scanVeilLabel" text="Scanning ..." textFill="WHITE">
                                  <font>
@@ -220,6 +224,7 @@
                                  </font>
                               </Label>
                               <ProgressBar fx:id="scanVeilProgress" prefWidth="200.0" />
+                              <Button fx:id="scanVeilCancel" mnemonicParsing="false" text="Cancel" />
                            </children>
                         </VBox>
                      </children>
