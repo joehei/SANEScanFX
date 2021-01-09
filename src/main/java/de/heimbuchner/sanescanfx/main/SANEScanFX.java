@@ -134,6 +134,8 @@ public class SANEScanFX extends Application implements Initializable {
 
 	private boolean timedScanActive;
 
+	private FileProperties settings;
+
 	private void executePreviewScan() {
 		scanVeil.setVisible(true);
 		deviceVeil.setVisible(true);
@@ -203,14 +205,6 @@ public class SANEScanFX extends Application implements Initializable {
 		t.start();
 	}
 
-	private void setImage(Image image) {
-		Platform.runLater(() -> {
-			imageview.setImage(image);
-			imageview.setFitWidth(image.getWidth());
-			imageview.setFitHeight(image.getHeight());
-		});
-	}
-
 	private void executeTimedScan() {
 		timedScanActive = true;
 
@@ -263,22 +257,6 @@ public class SANEScanFX extends Application implements Initializable {
 		Thread t = new Thread(scanWorker);
 		t.setDaemon(true);
 		t.start();
-	}
-
-	private FileProperties settings;
-
-	private void initSettings() {
-		try {
-			Path settingsFile = Paths
-					.get(Utils.getUserDataDirectory("SANEScanFX") + File.separator + "SANEScanFX.properties");
-			if (!Files.exists(settingsFile)) {
-				Files.createDirectories(settingsFile.getParent());
-				Files.createFile(settingsFile);
-			}
-			settings = new FileProperties(settingsFile);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 	@Override
@@ -454,6 +432,28 @@ public class SANEScanFX extends Application implements Initializable {
 		timerScan.setOnAction(event -> executeTimedScan());
 		scanVeilCancel.setOnAction(event -> timedScanActive = false);
 
+	}
+
+	private void initSettings() {
+		try {
+			Path settingsFile = Paths
+					.get(Utils.getUserDataDirectory("SANEScanFX") + File.separator + "SANEScanFX.properties");
+			if (!Files.exists(settingsFile)) {
+				Files.createDirectories(settingsFile.getParent());
+				Files.createFile(settingsFile);
+			}
+			settings = new FileProperties(settingsFile);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void setImage(Image image) {
+		Platform.runLater(() -> {
+			imageview.setImage(image);
+			imageview.setFitWidth(image.getWidth());
+			imageview.setFitHeight(image.getHeight());
+		});
 	}
 
 	@Override
