@@ -5,6 +5,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -18,6 +21,8 @@ import au.com.southsky.jfreesane.ScanListener;
 import au.com.southsky.jfreesane.ScanListenerAdapter;
 import de.heimbuchner.sanescanfx.controls.TextfieldCompletion;
 import de.heimbuchner.sanescanfx.options.OptionsControl;
+import de.heimbuchner.sanescanfx.utils.FileProperties;
+import de.heimbuchner.sanescanfx.utils.Utils;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -260,11 +265,37 @@ public class SANEScanFX extends Application implements Initializable {
 		t.start();
 	}
 
+	private FileProperties settings;
+
+	private void initSettings() {
+		try {
+			Path settingsFile = Paths
+					.get(Utils.getUserDataDirectory("SANEScanFX") + File.separator + "SANEScanFX.properties");
+			if (!Files.exists(settingsFile)) {
+				Files.createDirectories(settingsFile.getParent());
+				Files.createFile(settingsFile);
+			}
+			settings = new FileProperties(settingsFile);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 
+		initSettings();
+
 		timerSec.getItems().setAll(Arrays.asList(1, 5, 10, 15, 20, 25, 30, 45, 60, 120, 180));
-		timerSec.getSelectionModel().select(Integer.valueOf(30));
+		timerSec.getSelectionModel()
+				.select(Integer.valueOf(settings.getProperties().getProperty("timerscan.time", "30")));
+		timerSec.getSelectionModel().selectedItemProperty().addListener((obs, ov, nv) -> {
+			try {
+				settings.writeProperty("timerscan.time", nv.toString());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		});
 
 		List<String> suggestions = new ArrayList<>(Arrays.asList("${counter}", "${counter2}", "${counter3}",
 				"${counter4}", "${counter5}", "${counter6}", "${day}", "${hour12}", "${hour24}", "${minute}",
@@ -272,7 +303,16 @@ public class SANEScanFX extends Application implements Initializable {
 
 		outputDirectory = new TextfieldCompletion();
 		outputDirectory.getSuggestionListItems().setAll(suggestions);
-		outputDirectory.textProperty().addListener((obs, ov, nv) -> updateFileNamePreview());
+		outputDirectory.setText(settings.getProperties().getProperty("file.outdir",
+				System.getProperty("user.home") + File.separator + "SANEScanFX"));
+		outputDirectory.textProperty().addListener((obs, ov, nv) -> {
+			updateFileNamePreview();
+			try {
+				settings.writeProperty("file.outdir", nv.toString());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		});
 		fileGrid.add(outputDirectory, 1, 0);
 
 		chooseOutputDir.setOnAction(event -> {
@@ -285,13 +325,28 @@ public class SANEScanFX extends Application implements Initializable {
 
 		fileNamePattern = new TextfieldCompletion();
 		fileNamePattern.getSuggestionListItems().setAll(suggestions);
-		fileNamePattern.textProperty().addListener((obs, ov, nv) -> updateFileNamePreview());
-		fileNamePattern.setText("${year}-${month}-${day}_${hour24}-${minute}-${sec}");
+		fileNamePattern.textProperty().addListener((obs, ov, nv) -> {
+			updateFileNamePreview();
+			try {
+				settings.writeProperty("file.filenamepattern", nv.toString());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		});
+		fileNamePattern.setText(settings.getProperties().getProperty("file.filenamepattern",
+				"${year}-${month}-${day}_${hour24}-${minute}-${sec}"));
 		fileGrid.add(fileNamePattern, 1, 1);
 
 		fileFormat.getItems().addAll(Arrays.asList("png", "jpg", "bmp"));
-		fileFormat.getSelectionModel().selectFirst();
-		fileFormat.getSelectionModel().selectedItemProperty().addListener((obs, ov, nv) -> updateFileNamePreview());
+		fileFormat.getSelectionModel().select(settings.getProperties().getProperty("file.format", "png"));
+		fileFormat.getSelectionModel().selectedItemProperty().addListener((obs, ov, nv) -> {
+			updateFileNamePreview();
+			try {
+				settings.writeProperty("file.format", nv.toString());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		});
 		refreshDevice.setOnAction(event -> {
 			deviceVeil.setVisible(true);
 			deviceVeilProgress.setVisible(true);
@@ -398,7 +453,7 @@ public class SANEScanFX extends Application implements Initializable {
 		previewScan.setOnAction(event -> executePreviewScan());
 		timerScan.setOnAction(event -> executeTimedScan());
 		scanVeilCancel.setOnAction(event -> timedScanActive = false);
-		
+
 	}
 
 	@Override
