@@ -15,6 +15,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import javax.imageio.ImageIO;
+
 import au.com.southsky.jfreesane.SaneDevice;
 import au.com.southsky.jfreesane.SaneSession;
 import au.com.southsky.jfreesane.ScanListener;
@@ -184,6 +186,12 @@ public class SANEScanFX extends Application implements Initializable {
 			@Override
 			protected Image call() throws Exception {
 				BufferedImage image = currentDevice.acquireImage(progressBarUpdater);
+				Path currentFile = Paths.get(getCurrentFileName());
+				if (!Files.exists(currentFile.getParent())) {
+					Files.createDirectories(currentFile.getParent());
+				}
+				System.out.println(currentFile);
+				System.out.println(ImageIO.write(image, fileFormat.getSelectionModel().getSelectedItem(), currentFile.toFile()));
 				return SwingFXUtils.toFXImage(image, null);
 			}
 		};
@@ -325,6 +333,7 @@ public class SANEScanFX extends Application implements Initializable {
 				e.printStackTrace();
 			}
 		});
+		updateFileNamePreview();
 		refreshDevice.setOnAction(event -> {
 			deviceVeil.setVisible(true);
 			deviceVeilProgress.setVisible(true);
@@ -458,7 +467,6 @@ public class SANEScanFX extends Application implements Initializable {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-
 		Image icon = new Image(SANEScanFX.class.getResourceAsStream("icon.png"));
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("SANEScanFX.fxml"));
 		Parent parent = loader.load();
@@ -501,14 +509,18 @@ public class SANEScanFX extends Application implements Initializable {
 		return rv;
 	}
 
-	private void updateFileNamePreview() {
+	private String getCurrentFileName() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(substituteVars(outputDirectory.getText()));
 		sb.append(File.separator);
 		sb.append(substituteVars(fileNamePattern.getText()));
 		sb.append(".");
 		sb.append(fileFormat.getSelectionModel().getSelectedItem());
-		filePathPreview.setText(sb.toString());
+		return sb.toString();
+	}
+
+	private void updateFileNamePreview() {
+		filePathPreview.setText(getCurrentFileName());
 	}
 
 }
