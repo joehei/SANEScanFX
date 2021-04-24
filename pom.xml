@@ -10,9 +10,9 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.release>15</maven.compiler.release>
-		<javafx.version>15.0.1</javafx.version>
-		<ikonli>12.1.0</ikonli>
+		<maven.compiler.release>16</maven.compiler.release>
+		<javafx.version>17-ea+7</javafx.version>
+		<ikonli>[12,13)</ikonli>
 	</properties>
 
 	<dependencies>
@@ -37,7 +37,7 @@
 		<dependency>
 			<groupId>com.googlecode.jfreesane</groupId>
 			<artifactId>jfreesane</artifactId>
-			<version>0.98</version>
+			<version>1.0</version>
 		</dependency>
 
 		<dependency>
