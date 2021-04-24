@@ -19,13 +19,13 @@ public class SaneOptionDoubleRange extends ASaneOption {
 
 		SaneOption saneOption = saneDevice.getOption(saneOptionName);
 		HBox box = new HBox(5);
-		box.getChildren().add(new Label(saneOption.getRangeConstraints().getMinimumInteger() + ""));
+		box.getChildren().add(new Label(String.format("%.2f", saneOption.getRangeConstraints().getMinimumFixed())));
 		slider = new Slider();
 		slider.setMin(saneOption.getRangeConstraints().getMinimumFixed());
 		slider.setMax(saneOption.getRangeConstraints().getMaximumFixed());
 
 		box.getChildren().add(slider);
-		box.getChildren().add(new Label(saneOption.getRangeConstraints().getMaximumInteger() + ""));
+		box.getChildren().add(new Label(String.format("%.2f", saneOption.getRangeConstraints().getMaximumFixed())));
 
 		updateControl();
 		getChildren().add(box);
