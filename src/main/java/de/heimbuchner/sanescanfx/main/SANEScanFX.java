@@ -229,6 +229,11 @@ public class SANEScanFX extends Application implements Initializable {
 					int counter = timerSec.getSelectionModel().getSelectedItem();
 					Platform.runLater(() -> scanVeilProgress.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS));
 
+					Path currentFile = Paths.get(getCurrentFileName());
+					if (!Files.exists(currentFile.getParent())) {
+						Files.createDirectories(currentFile.getParent());
+					}
+					
 					while (counter >= 0) {
 						final int c = counter;
 						Platform.runLater(() -> scanVeilLabel.setText("Scan starts in " + c + " sec."));
@@ -244,6 +249,8 @@ public class SANEScanFX extends Application implements Initializable {
 					}
 					Platform.runLater(() -> scanVeilLabel.setText("Timed scan ..."));
 					BufferedImage image = currentDevice.acquireImage(progressBarUpdater);
+					System.out.println(currentFile);
+					System.out.println(ImageIO.write(image, fileFormat.getSelectionModel().getSelectedItem(), currentFile.toFile()));
 					setImage(SwingFXUtils.toFXImage(image, null));
 				}
 
