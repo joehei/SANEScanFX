@@ -12,10 +12,12 @@ module sanescanfx {
 	requires transitive jfreesane;
 	requires java.desktop;
 	requires javafx.swing;
+	requires javafx.base;
 
 	opens de.heimbuchner.sanescanfx.main to javafx.fxml;
 
 	exports de.heimbuchner.sanescanfx.main;
 	exports de.heimbuchner.sanescanfx.controls;
+	exports de.heimbuchner.sanescanfx.tests;
 
 }

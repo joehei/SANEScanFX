@@ -10,8 +10,8 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.release>16</maven.compiler.release>
-		<javafx.version>17-ea+7</javafx.version>
+		<maven.compiler.release>17</maven.compiler.release>
+		<javafx.version>17.0.0.1</javafx.version>
 		<ikonli>[12,13)</ikonli>
 	</properties>
 
@@ -82,7 +82,6 @@
 				<version>0.0.5</version>
 				<configuration>
 					<mainClass>de.heimbuchner.sanescanfx.main.SANEScanFX</mainClass>
-
 					<commandlineArgs>-Xmx1024m</commandlineArgs>
 				</configuration>
 			</plugin>

@@ -43,6 +43,7 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -527,7 +528,9 @@ public class SANEScanFX extends Application implements Initializable {
 	}
 
 	private void updateFileNamePreview() {
-		filePathPreview.setText(getCurrentFileName());
+		Path file = Paths.get(getCurrentFileName());
+		filePathPreview.setText(file.getFileName().toString());
+		filePathPreview.setTooltip(new Tooltip(file.toString()));
 	}
 
 }
