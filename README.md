@@ -1,5 +1,7 @@
 # SANEScanFX
 
+![img.png](img.png)
+
 ## Motivation
 I have bought a raspberry pi. This serves in our network as a server for the printer, the scanner and works as a dns server with the [Pi hole](https://pi-hole.net/).
 For scanning I have not found an application that I like, for this reason I started to develop the SANEScanFX.
