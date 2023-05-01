@@ -8,7 +8,7 @@ For scanning I have not found an application that I like, for this reason I star
 The installation of a SANE service is not explained here, please use Google for that.
 
 # Build
-Make sure you have JAVA 15 on the path.
+Make sure you have JAVA 17 on the path.
 
 ```
 mvn clean compile javafx:run

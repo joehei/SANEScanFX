@@ -11,7 +11,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.release>17</maven.compiler.release>
-    <javafx.version>20-ea+2</javafx.version>
+    <javafx.version>20.0.1</javafx.version>
     <ikonli>[12,13)</ikonli>
   </properties>
 
