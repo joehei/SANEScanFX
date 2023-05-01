@@ -11,7 +11,7 @@ import javafx.scene.control.ChoiceBox;
 
 public class SaneOptionStringList extends ASaneOption {
 
-	private ChoiceBox<String> cb;
+	private final ChoiceBox<String> cb;
 
 	public SaneOptionStringList(SaneDevice saneDevice, String saneOptionName, ObservableList<ASaneOption> saneOptionsFX)
 			throws IOException, SaneException {

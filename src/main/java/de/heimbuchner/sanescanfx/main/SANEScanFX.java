@@ -10,10 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import javax.imageio.ImageIO;
 
@@ -53,91 +50,59 @@ import javafx.stage.Stage;
 
 public class SANEScanFX extends Application implements Initializable {
 
-	enum SCANTYPE {
-		PREVIEW, SINGLE, TIMED
-	}
+	@FXML
+	private Button scan;
+	@FXML
+	private Button previewScan;
+	@FXML
+	private Button timerScan;
+	@FXML
+	private ImageView imageview;
+	@FXML
+	private TextField port;
+	@FXML
+	private TextField host;
+	@FXML
+	private Button refreshDevice;
+	@FXML
+	private ComboBox<SaneDeviceFX> deviceList;
+	@FXML
+	private StackPane deviceVeil;
+	@FXML
+	private ProgressBar deviceVeilProgress;
+	@FXML
+	private ScrollPane scanOption;
+	@FXML
+	private StackPane scanVeil;
+	@FXML
+	private Label scanVeilLabel;
+	@FXML
+	private ProgressBar scanVeilProgress;
+	@FXML
+	private ChoiceBox<Integer> timerSec;
+	@FXML
+	private GridPane fileGrid;
+	@FXML
+	private Button chooseOutputDir;
+	@FXML
+	private ChoiceBox<String> fileFormat;
+	@FXML
+	private Label filePathPreview;
+	private TextfieldCompletion outputDirectory;
+	private TextfieldCompletion fileNamePattern;
+	private OptionsControl optionsControl;
+	private SaneSession session;
+	private SaneDevice currentDevice;
+	private int fileCounter = 0;
+	@FXML
+	private Button scanVeilCancel;
+	private ScanListener progressBarUpdater;
+	private boolean timedScanActive;
+	private FileProperties settings;
 
 	public static void main(String[] args) {
 		launch(args);
 	}
-
-	@FXML
-	private Button scan;
-
-	@FXML
-	private Button previewScan;
-
-	@FXML
-	private Button timerScan;
-
-	@FXML
-	private ImageView imageview;
-
-	@FXML
-	private TextField port;
-
-	@FXML
-	private TextField host;
-
-	@FXML
-	private Button refreshDevice;
-
-	@FXML
-	private ComboBox<SaneDeviceFX> deviceList;
-
-	@FXML
-	private StackPane deviceVeil;
-
-	@FXML
-	private ProgressBar deviceVeilProgress;
-
-	@FXML
-	private ScrollPane scanOption;
-
-	@FXML
-	private StackPane scanVeil;
-
-	@FXML
-	private Label scanVeilLabel;
-
-	@FXML
-	private ProgressBar scanVeilProgress;
-
-	@FXML
-	private ChoiceBox<Integer> timerSec;
-
-	@FXML
-	private GridPane fileGrid;
-
-	@FXML
-	private Button chooseOutputDir;
-
-	@FXML
-	private ChoiceBox<String> fileFormat;
-
-	@FXML
-	private Label filePathPreview;
-
-	private TextfieldCompletion outputDirectory;
-
-	private TextfieldCompletion fileNamePattern;
-
-	private OptionsControl optionsControl;
-
-	private SaneSession session;
-
-	private SaneDevice currentDevice;
-
-	private int fileCounter = 0;
-
-	@FXML
-	private Button scanVeilCancel;
-
-	private ScanListener progressBarUpdater;
-
-	private boolean timedScanActive;
-
-	private FileProperties settings;
 
 	private void executePreviewScan() {
 		scanVeil.setVisible(true);
@@ -234,7 +199,7 @@ public class SANEScanFX extends Application implements Initializable {
 					if (!Files.exists(currentFile.getParent())) {
 						Files.createDirectories(currentFile.getParent());
 					}
-					
+
 					while (counter >= 0) {
 						final int c = counter;
 						Platform.runLater(() -> scanVeilLabel.setText("Scan starts in " + c + " sec."));
@@ -302,7 +267,7 @@ public class SANEScanFX extends Application implements Initializable {
 		outputDirectory.textProperty().addListener((obs, ov, nv) -> {
 			updateFileNamePreview();
 			try {
-				settings.writeProperty("file.outdir", nv.toString());
+				settings.writeProperty("file.outdir", nv);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -322,7 +287,7 @@ public class SANEScanFX extends Application implements Initializable {
 		fileNamePattern.textProperty().addListener((obs, ov, nv) -> {
 			updateFileNamePreview();
 			try {
-				settings.writeProperty("file.filenamepattern", nv.toString());
+				settings.writeProperty("file.filenamepattern", nv);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -336,7 +301,7 @@ public class SANEScanFX extends Application implements Initializable {
 		fileFormat.getSelectionModel().selectedItemProperty().addListener((obs, ov, nv) -> {
 			updateFileNamePreview();
 			try {
-				settings.writeProperty("file.format", nv.toString());
+				settings.writeProperty("file.format", nv);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -367,7 +332,7 @@ public class SANEScanFX extends Application implements Initializable {
 				@Override
 				protected List<SaneDeviceFX> call() throws Exception {
 					InetAddress adress = InetAddress.getByName(host.getText());
-					Integer intPort = Integer.valueOf(port.getText());
+					int intPort = Integer.parseInt(port.getText());
 
 					try {
 						session = SaneSession.withRemoteSane(adress, intPort);
@@ -475,7 +440,7 @@ public class SANEScanFX extends Application implements Initializable {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		Image icon = new Image(SANEScanFX.class.getResourceAsStream("icon.png"));
+		Image icon = new Image(Objects.requireNonNull(SANEScanFX.class.getResourceAsStream("icon.png")));
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("SANEScanFX.fxml"));
 		Parent parent = loader.load();
 		Scene s = new Scene(parent);
@@ -488,7 +453,7 @@ public class SANEScanFX extends Application implements Initializable {
 	private String substituteVars(String s) {
 		LocalDateTime ldt = LocalDateTime.now();
 
-		String rv = s.replace("${counter}", fileCounter + "");
+		String rv = s.replace("${counter}", String.valueOf(fileCounter));
 		rv = rv.replace("${counter2}", String.format("%02d", fileCounter));
 		rv = rv.replace("${counter3}", String.format("%03d", fileCounter));
 		rv = rv.replace("${counter4}", String.format("%04d", fileCounter));
@@ -506,7 +471,7 @@ public class SANEScanFX extends Application implements Initializable {
 		String res = "200";
 		if (currentDevice != null) {
 			try {
-				res = currentDevice.getOption("resolution").getIntegerValue() + "";
+				res = String.valueOf(currentDevice.getOption("resolution").getIntegerValue());
 			} catch (Exception e) {
 				// nothing to do if it dows not work
 			}
@@ -518,19 +483,21 @@ public class SANEScanFX extends Application implements Initializable {
 	}
 
 	private String getCurrentFileName() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(substituteVars(outputDirectory.getText()));
-		sb.append(File.separator);
-		sb.append(substituteVars(fileNamePattern.getText()));
-		sb.append(".");
-		sb.append(fileFormat.getSelectionModel().getSelectedItem());
-		return sb.toString();
+		return substituteVars(outputDirectory.getText()) +
+				File.separator +
+				substituteVars(fileNamePattern.getText()) +
+				"." +
+				fileFormat.getSelectionModel().getSelectedItem();
 	}
 
 	private void updateFileNamePreview() {
 		Path file = Paths.get(getCurrentFileName());
 		filePathPreview.setText(file.getFileName().toString());
 		filePathPreview.setTooltip(new Tooltip(file.toString()));
+	}
+
+	enum SCANTYPE {
+		PREVIEW, SINGLE, TIMED
 	}
 
 }

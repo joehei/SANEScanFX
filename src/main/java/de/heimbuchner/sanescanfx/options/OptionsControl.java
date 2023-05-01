@@ -18,9 +18,9 @@ import javafx.scene.layout.VBox;
 
 public class OptionsControl extends VBox {
 
-	private ObjectProperty<SaneDevice> device = new SimpleObjectProperty<>();;
+	private final ObjectProperty<SaneDevice> device = new SimpleObjectProperty<>();;
 
-	private ObservableList<ASaneOption> saneOptionsFX = FXCollections.observableArrayList();
+	private final ObservableList<ASaneOption> saneOptionsFX = FXCollections.observableArrayList();
 
 	public OptionsControl(SaneDevice device) {
 		this.device.setValue(device);
@@ -48,33 +48,27 @@ public class OptionsControl extends VBox {
 
 						ASaneOption saneOptionFX = null;
 						switch (saneOption.getType()) {
-						case STRING:
-							saneOptionFX = new SaneOptionStringList(dev, saneOption.getName(), saneOptionsFX);
-							break;
-						case INT:
-							if (saneOption.getConstraintType()
-									.equals(OptionValueConstraintType.VALUE_LIST_CONSTRAINT)) {
-								saneOptionFX = new SaneOptionIntegerList(dev, saneOption.getName(), saneOptionsFX);
-							} else if (saneOption.getConstraintType()
-									.equals(OptionValueConstraintType.RANGE_CONSTRAINT)) {
-								saneOptionFX = new SaneOptionIntegerRange(dev, saneOption.getName(), saneOptionsFX);
-							} else {
-								System.out.println(saneOption);
+							case STRING ->
+									saneOptionFX = new SaneOptionStringList(dev, saneOption.getName(), saneOptionsFX);
+							case INT -> {
+								if (saneOption.getConstraintType()
+										.equals(OptionValueConstraintType.VALUE_LIST_CONSTRAINT)) {
+									saneOptionFX = new SaneOptionIntegerList(dev, saneOption.getName(), saneOptionsFX);
+								} else if (saneOption.getConstraintType()
+										.equals(OptionValueConstraintType.RANGE_CONSTRAINT)) {
+									saneOptionFX = new SaneOptionIntegerRange(dev, saneOption.getName(), saneOptionsFX);
+								} else {
+									System.out.println(saneOption);
+								}
 							}
-
-							break;
-
-						case BOOLEAN:
-							saneOptionFX = new SaneOptionBoolean(dev, saneOption.getName(), saneOptionsFX);
-							break;
-						case FIXED:
-							saneOptionFX = new SaneOptionDoubleRange(dev, saneOption.getName(), saneOptionsFX);
-							break;
-						case BUTTON:
-							saneOptionFX = new SaneOptionButton(dev, saneOption.getName(), saneOptionsFX);
-							break;
-						default:
-							break;
+							case BOOLEAN ->
+									saneOptionFX = new SaneOptionBoolean(dev, saneOption.getName(), saneOptionsFX);
+							case FIXED ->
+									saneOptionFX = new SaneOptionDoubleRange(dev, saneOption.getName(), saneOptionsFX);
+							case BUTTON ->
+									saneOptionFX = new SaneOptionButton(dev, saneOption.getName(), saneOptionsFX);
+							default -> {
+							}
 						}
 						if (saneOptionFX != null) {
 							gp.add(saneOptionFX, 1, row);

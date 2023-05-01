@@ -11,7 +11,7 @@ import javafx.scene.layout.HBox;
 
 public class SaneOptionDoubleRange extends ASaneOption {
 
-	private Slider slider;
+	private final Slider slider;
 
 	protected SaneOptionDoubleRange(SaneDevice saneDevice, String saneOptionName,
 			ObservableList<ASaneOption> saneOptionsFX) throws IOException {

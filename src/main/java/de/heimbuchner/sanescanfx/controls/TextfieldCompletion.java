@@ -36,6 +36,10 @@ public class TextfieldCompletion extends TextField {
 		return suggestionListItems;
 	}
 
+	public void setSuggestionListItems(ObservableList<String> suggestionListItems) {
+		this.suggestionListItems = suggestionListItems;
+	}
+
 	private void init() {
 
 		TextfieldCompletion textfieldCompletion = this;
@@ -106,10 +110,6 @@ public class TextfieldCompletion extends TextField {
 		int newCartPos = (part1 + toInsert).length();
 		textfieldCompletion.setText(part1 + toInsert + part2);
 		textfieldCompletion.positionCaret(newCartPos);
-	}
-
-	public void setSuggestionListItems(ObservableList<String> suggestionListItems) {
-		this.suggestionListItems = suggestionListItems;
 	}
 
 }

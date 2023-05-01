@@ -7,7 +7,7 @@ import javafx.scene.control.CheckBox;
 
 public class SaneOptionBoolean extends ASaneOption {
 
-	private CheckBox checkBox;
+	private final CheckBox checkBox;
 
 	protected SaneOptionBoolean(SaneDevice saneDevice, String saneOptionName,
 			ObservableList<ASaneOption> saneOptionsFX) {

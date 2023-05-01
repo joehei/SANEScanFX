@@ -9,7 +9,7 @@ import javafx.scene.control.Button;
 
 public class SaneOptionButton extends ASaneOption {
 
-	private Button button;
+	private final Button button;
 
 	protected SaneOptionButton(SaneDevice saneDevice, String saneOptionName, ObservableList<ASaneOption> saneOptionsFX)
 			throws IOException {

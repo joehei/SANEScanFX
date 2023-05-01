@@ -13,7 +13,7 @@ public class SaneOptionIntegerRange extends ASaneOption {
 
 	private Slider slider;
 
-	private Label currentValue;
+	private final Label currentValue;
 
 	protected SaneOptionIntegerRange(SaneDevice saneDevice, String saneOptionName,
 			ObservableList<ASaneOption> saneOptionsFX) throws IOException {
