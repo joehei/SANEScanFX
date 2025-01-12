@@ -8,9 +8,12 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.HBox;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SaneOptionDoubleRange extends ASaneOption {
 
+	private static final Logger log = LoggerFactory.getLogger(SaneOptionDoubleRange.class);
 	private final Slider slider;
 
 	protected SaneOptionDoubleRange(SaneDevice saneDevice, String saneOptionName,
@@ -34,7 +37,7 @@ public class SaneOptionDoubleRange extends ASaneOption {
 				saneDevice.getOption(saneOptionName).setFixedValue(nv.doubleValue());
 				fireUpdate();
 			} catch (Exception e) {
-				e.printStackTrace();
+				log.error(e.getMessage(),e);
 			}
 		});
 	}
@@ -50,9 +53,8 @@ public class SaneOptionDoubleRange extends ASaneOption {
 				slider.setDisable(true);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e.getMessage(),e);
 		}
-
 	}
 
 }

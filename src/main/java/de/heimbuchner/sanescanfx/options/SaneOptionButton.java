@@ -6,9 +6,12 @@ import au.com.southsky.jfreesane.SaneDevice;
 import au.com.southsky.jfreesane.SaneOption;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SaneOptionButton extends ASaneOption {
 
+	private static final Logger log = LoggerFactory.getLogger(SaneOptionButton.class);
 	private final Button button;
 
 	protected SaneOptionButton(SaneDevice saneDevice, String saneOptionName, ObservableList<ASaneOption> saneOptionsFX)
@@ -24,7 +27,7 @@ public class SaneOptionButton extends ASaneOption {
 				saneDevice.getOption(saneOptionName).setButtonValue();
 				fireUpdate();
 			} catch (Exception e) {
-				e.printStackTrace();
+				log.error(e.getMessage(),e);
 			}
 
 		});
@@ -34,15 +37,10 @@ public class SaneOptionButton extends ASaneOption {
 	void updateControl() {
 		try {
 			SaneOption saneOption = saneDevice.getOption(saneOptionName);
-			if (saneOption.isActive() && saneOption.isWriteable()) {
-				button.setDisable(false);
-			} else {
-				button.setDisable(true);
-			}
+            button.setDisable(!saneOption.isActive() || !saneOption.isWriteable());
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e.getMessage(),e);
 		}
-
 	}
 
 }

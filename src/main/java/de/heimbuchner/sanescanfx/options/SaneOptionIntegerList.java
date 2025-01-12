@@ -8,9 +8,12 @@ import au.com.southsky.jfreesane.SaneException;
 import au.com.southsky.jfreesane.SaneOption;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ChoiceBox;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SaneOptionIntegerList extends ASaneOption {
 
+	private static final Logger log = LoggerFactory.getLogger(SaneOptionIntegerList.class);
 	private final ChoiceBox<Integer> intCb;
 
 	protected SaneOptionIntegerList(SaneDevice saneDevice, String saneOptionName,
@@ -29,7 +32,7 @@ public class SaneOptionIntegerList extends ASaneOption {
 				saneDevice.getOption(saneOptionName).setIntegerValue(nv);
 				fireUpdate();
 			} catch (IOException | SaneException e) {
-				e.printStackTrace();
+				log.error(e.getMessage(),e);
 			}
 		});
 	}
@@ -45,7 +48,7 @@ public class SaneOptionIntegerList extends ASaneOption {
 				intCb.setDisable(true);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e.getMessage(),e);
 		}
 	}
 

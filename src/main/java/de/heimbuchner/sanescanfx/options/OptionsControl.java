@@ -18,7 +18,7 @@ import javafx.scene.layout.VBox;
 
 public class OptionsControl extends VBox {
 
-	private final ObjectProperty<SaneDevice> device = new SimpleObjectProperty<>();;
+	private final ObjectProperty<SaneDevice> device = new SimpleObjectProperty<>();
 
 	private final ObservableList<ASaneOption> saneOptionsFX = FXCollections.observableArrayList();
 
@@ -78,7 +78,7 @@ public class OptionsControl extends VBox {
 
 				}
 			} catch (Exception e) {
-				JavaFXUtils.showExceptionDialog("Exception", null, "An exception occured", e);
+				JavaFXUtils.showExceptionDialog("Exception", null, "An exception occurred", e);
 			}
 		}
 	}

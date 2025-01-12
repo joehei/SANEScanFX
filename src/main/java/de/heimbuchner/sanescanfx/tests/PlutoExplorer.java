@@ -29,6 +29,10 @@ public class PlutoExplorer extends Application {
 	private static final String IMAGE_URL = "https://www.nasa.gov/sites/default/files/thumbnails/image/global-mosaic-of-pluto-in-true-color.jpg";
 	private static final int MIN_PIXELS = 10;
 
+	public static void main(String[] args) {
+		launch(args);
+	}
+
 	@Override
 	public void start(Stage primaryStage) {
 		Image image = new Image(IMAGE_URL);
@@ -66,7 +70,7 @@ public class PlutoExplorer extends Application {
 				imageView.setViewport(new Rectangle2D(imageView.getViewport().getMinX(), imageView.getViewport().getMinY(), newWidth, newHeight));
 			}
 		});
-		
+
 		imageView.setOnMouseClicked(e -> {
 			if (e.getClickCount() == 2) {
 				reset(imageView, width, height);
@@ -200,9 +204,5 @@ public class PlutoExplorer extends Application {
 		Rectangle2D viewport = imageView.getViewport();
 		return new Point2D(viewport.getMinX() + xProportion * viewport.getWidth(),
 				viewport.getMinY() + yProportion * viewport.getHeight());
-	}
-
-	public static void main(String[] args) {
-		launch(args);
 	}
 }

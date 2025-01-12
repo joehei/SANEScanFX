@@ -8,9 +8,12 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.HBox;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SaneOptionIntegerRange extends ASaneOption {
 
+	private static final Logger log = LoggerFactory.getLogger(SaneOptionIntegerRange.class);
 	private Slider slider;
 
 	private final Label currentValue;
@@ -40,7 +43,7 @@ public class SaneOptionIntegerRange extends ASaneOption {
 				saneDevice.getOption(saneOptionName).setIntegerValue(nv.intValue());
 				fireUpdate();
 			} catch (Exception e) {
-				e.printStackTrace();
+				log.error(e.getMessage(),e);
 			}
 		});
 	}
@@ -58,7 +61,7 @@ public class SaneOptionIntegerRange extends ASaneOption {
 				slider.setDisable(true);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e.getMessage(),e);
 		}
 
 	}
